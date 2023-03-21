@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "option-pricing-understanding"
+version = "0.1.0"
+description = ""
+authors = ["BaptisteZloch <bzloch@hotmail.fr>"]
+readme = "README.md"
+packages = [{include = "option_pricing_understanding"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pandas = "^1.5.3"
+statsmodels = "^0.13.5"
+scipy = "1.8.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+ipykernel = "^6.22.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
