@@ -60,7 +60,7 @@ def monte_carlo_option_price(
 
 
 def black_scholes_option_price(
-    s0: float | int,
+    s: float | int,
     k: float | int,
     r: float | int,
     tau: float | int,
@@ -70,7 +70,7 @@ def black_scholes_option_price(
     """Monte Carlo simulation of the option price.
 
     Args:
-        s0 (float | int): The spot price.
+        s (float | int): The actual spot price.
         k (float | int): The strike price.
         r (float | int): The risk-free interest rate.
         tau (float | int): The time to maturity.
@@ -80,14 +80,58 @@ def black_scholes_option_price(
     Returns:
         float: The simulated option price.
     """
-    d1 = (np.log(s0 / k) + (r + 0.5 * sigma**2) * tau) / (sigma * np.sqrt(tau))
+    d1 = (np.log(s / k) + (r + 0.5 * sigma**2) * tau) / (sigma * tau**0.5)
     d2 = d1 - sigma * np.sqrt(tau)
     pv = k * np.exp(-r * tau)
 
     match option_type:
         case "put":
-            return pv * stats.norm.cdf(-d2) - s0 * stats.norm.cdf(-d1)
+            return pv * stats.norm.cdf(-d2) - s * stats.norm.cdf(-d1)
         case "call":
-            return s0 * stats.norm.cdf(d1) - pv * stats.norm.cdf(d2)
+            return s * stats.norm.cdf(d1) - pv * stats.norm.cdf(d2)
         case _:
             raise ValueError(f"Unknown option type: {option_type}")
+
+
+def from_call_to_put(
+    call_price: float,
+    s: float | int,
+    k: float | int,
+    r: float | int,
+    tau: float | int,
+) -> float:
+    """Using the put call parity it computes the put price from the call price.
+
+    Args:
+        call_price (float): The current call price.
+        s (float | int): The actual spot price.
+        k (float | int): The strike price.
+        r (float | int): The risk-free interest rate.
+        tau (float | int): The time to maturity.
+
+    Returns:
+        float: The put price.
+    """
+    return call_price - s + k * np.exp(-r * tau)
+
+
+def from_put_to_call(
+    put_price: float,
+    s: float | int,
+    k: float | int,
+    r: float | int,
+    tau: float | int,
+) -> float:
+    """Using the put call parity it computes the call price from the put price.
+
+    Args:
+        put_price (float): The put price.
+        s (float | int): The actual spot price.
+        k (float | int): The strike price.
+        r (float | int): The risk-free interest rate.
+        tau (float | int): The time to maturity.
+
+    Returns:
+        float: The call price.
+    """
+    return s - k * np.exp(-r * tau) + put_price
