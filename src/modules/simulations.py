@@ -38,12 +38,36 @@ def plot_paths(
     title: str = "Simulated Brownian Motion",
 ) -> None:
     fig = plt.figure(figsize=(15, 4))
+    fig.suptitle(title)
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
     for y in paths:
-        plt.plot(time, y)
-    plt.xlabel("Time")
-    plt.ylabel("Price")
-    plt.grid(True)
-    plt.title(title)
+        ax1.plot(time, y)
+    ax1.set_xlabel("Time")
+    ax1.set_ylabel("Price")
+    ax1.set_title(f"{paths.shape[0]} simulations")
+    ax1.grid(True)
+    ax2.hist(
+        paths[:, -1],
+        density=True,
+        bins=75,
+        facecolor="blue",
+        alpha=0.3,
+        label="Frequency of X(T)",
+    )
+    ax2.hist(
+        paths[:, paths.shape[-1] // 4],
+        density=True,
+        bins=75,
+        facecolor="red",
+        alpha=0.3,
+        label="Frequency of X(T/4)",
+    )
+    ax2.set_xlabel("Price")
+    ax2.set_ylabel("Density")
+    ax2.set_title("Distribution at X(T) and X(T/4)")
+    ax2.legend()
+    ax2.grid(True)
 
 
 # n_sim = 100
