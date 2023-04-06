@@ -36,7 +36,7 @@ def account_evolution(risk_free_rate: float, time: float) -> float:
     return np.exp(risk_free_rate * time)
 
 
-def plot_paths(
+def plot_paths_with_distribution(
     time: npt.NDArray[np.float64],
     paths: npt.NDArray[np.float64],
     title: str = "Simulated Brownian Motion",
