@@ -67,7 +67,7 @@ def black_scholes_option_price(
     sigma: float | int,
     option_type: Literal["call", "put"] = "call",
 ) -> float:
-    """Monte Carlo simulation of the option price.
+    """Black-Scholes european option pricing model.
 
     Args:
         s (float | int): The actual spot price.

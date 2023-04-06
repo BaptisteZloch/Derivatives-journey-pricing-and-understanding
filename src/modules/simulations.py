@@ -32,6 +32,10 @@ def generate_brownian_paths(
     return np.linspace(0, T, n_steps + 1), paths if get_time is True else paths
 
 
+def account_evolution(risk_free_rate: float, time: float) -> float:
+    return np.exp(risk_free_rate * time)
+
+
 def plot_paths(
     time: npt.NDArray[np.float64],
     paths: npt.NDArray[np.float64],
