@@ -3,6 +3,8 @@ import scipy.stats as stats
 import numpy.typing as npt
 from typing import Literal
 
+from modules.greeks import vega
+
 
 def monte_carlo_spot_price(
     s0: float | int,
@@ -135,3 +137,29 @@ def from_put_to_call(
         float: The call price.
     """
     return s - k * np.exp(-r * tau) + put_price
+
+
+def implied_volatility(
+    market_price: int | float,
+    spot: int | float,
+    strike: int | float,
+    r: int | float,
+    tau: int | float,
+    guessed_sigma: int | float,
+    option_type: Literal["call", "put"] = "call",
+) -> float:
+    sigma = guessed_sigma
+    error = 1e10
+    n_iter = 0
+    error_tol = 10e-10
+    while True and n_iter < 100 and error > error_tol:
+        g = (
+            black_scholes_option_price(spot, strike, r, tau, sigma, option_type)
+            - market_price
+        )
+        g_prim = vega(spot, strike, tau, r, sigma, option_type)
+        new_sigma = sigma - g / g_prim
+        error = np.abs(new_sigma - sigma)
+        sigma = new_sigma
+        n_iter += 1
+    return sigma
